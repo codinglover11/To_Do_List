@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+*{
+   background-color: black;
+   color: white;
+} 
+.bodys{
+    margin-top: 10%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+   text-align: center;
+    align-items: center;
+}
+button{
+    width: 50px;
+    height: 30px;
+    background-color: rgb(228, 187, 54);
+}
+#inputs{
+    background-color: white;
+    color: black;
+    width: 200px;
+    height: 30px;
+}
+.container{
+    margin-top: 20px;
+   
+}
+    
+
+.store_task{
+  display: grid;
+  grid-template-columns: 1fr 0.5fr;
+  gap: 100px;
+  align-items: center;
+  height: auto;
+}
+    </style>
+</head>
+<body>
+    <div class="bodys">
+        <h1>To do List</h1>
+        <div class="input">
+            <form action="">
+            <input type="text" name="" id="inputs" placeholder="Enter your Task">
+            <button class="add_task">Add</button></form>
+        </div>
+        <div class="container">
+        <!-- <li>run</li> 
+        <button class="delete_button">Delete</button> -->
+        </div>
+        <br>
+    </div>
+    <script>
+        let cont=document.querySelector(".container");
+        let inp=document.getElementById("inputs");
+        const gettodo =() =>{
+return JSON.parse(localStorage.getItem("to_do_list"));
+        }
+
+const addtodo=(arr_val)=>{
+    return localStorage.setItem("to_do_list",JSON.stringify(arr_val));
+}
+
+      let arr_val=gettodo() || [];
+
+      addTodoDynamicElement=(curele)=>{
+        const divele=document.createElement("div");
+    divele.classList.add("store_task");
+    divele.innerHTML=`<li>${curele}</li> <button class="delete_button">Delete</button>`;
+    cont.append(divele);
+      }
+
+    const add_todolist=(e)=>{
+    e.preventDefault();
+    if(inp.value=="" || inp.value==" " || inp.value=="   "){
+        window.alert("No Value Fetch");
+        return;
+    }
+    if(arr_val.includes(inp.value)){
+         window.alert(`the task ${inp.value} is already presents`);
+    }
+    else{
+    arr_val.push(inp.value);
+
+    arr_val=[...new Set(arr_val)];
+    localStorage.setItem("to_do_list",JSON.stringify(arr_val));
+    console.log(arr_val);
+    const divele=document.createElement("div");
+    divele.classList.add("store_task");
+    divele.innerHTML=`<li>${inp.value}</li> <button class="delete_button">Delete</button>`;
+    cont.append(divele);}
+    inp.value="";
+}
+const show=()=>{
+    console.log(arr_val);
+    arr_val.forEach((curele) => {
+        addTodoDynamicElement(curele);
+    });
+}
+show();
+
+const removertodoelem=(e)=>{
+const targ=e.target;
+let remove_elem=targ.previousElementSibling.innerText;
+let parent_elem=targ.parentElement;
+
+arr_val=arr_val.filter((curr_val)=>{
+return curr_val!=remove_elem;
+});
+console.log(arr_val);
+
+
+addtodo(arr_val);
+parent_elem.remove();
+}
+
+cont.addEventListener("click",(e)=>{
+e.preventDefault();
+if(e.target.classList.contains("delete_button")){
+removertodoelem(e);}
+
+});
+
+
+document.querySelector(".add_task").addEventListener("click",(e)=>
+add_todolist(e));
+
+    </script>
+</body>
+</html>
